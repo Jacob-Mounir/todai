@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import DashboardLayout from './components/DashboardLayout';
 import TaskBoard from './components/TaskBoard';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 
-function App() {
+function AppContent() {
+  const { styles } = useTheme();
   const [userContext, setUserContext] = useState('');
   const [tasks, setTasks] = useState([
     { id: '1', title: 'Check emails', bucket: 'Today', importanceScore: 40, contextTags: ['Routine'], estimatedMinutes: 15, macroCategory: 'Communication' },
@@ -30,6 +32,23 @@ function App() {
       setTasks(prev => [...prev, newTask]);
     } catch (err) {
       console.error('Failed to add task', err);
+    }
+  };
+
+  const handleUpdateTask = async (taskId, updates) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (!res.ok) throw new Error('Failed to update task');
+
+      const updatedTask = await res.json();
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+    } catch (err) {
+      console.error('Update failed', err);
+      // Optimistic update fallback or error toast could go here
     }
   };
 
@@ -78,6 +97,7 @@ function App() {
       <TaskBoard
         tasks={tasks}
         onAddTask={handleAddTask}
+        onUpdateTask={handleUpdateTask}
         onAutoOrganize={handleAutoOrganize}
         isOrganizing={isOrganizing}
       />
@@ -85,4 +105,10 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}

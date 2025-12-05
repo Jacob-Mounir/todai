@@ -40,6 +40,20 @@ app.post('/api/tasks', (req, res) => {
 	res.status(201).json(newTask);
 });
 
+// PUT /api/tasks/:id
+app.put('/api/tasks/:id', (req, res) => {
+	const { id } = req.params;
+	const updates = req.body;
+
+	const taskIndex = tasks.findIndex(t => t.id === id);
+	if (taskIndex === -1) {
+		return res.status(404).json({ error: 'Task not found' });
+	}
+
+	tasks[taskIndex] = { ...tasks[taskIndex], ...updates };
+	res.json(tasks[taskIndex]);
+});
+
 // POST /api/organize
 app.post('/api/organize', async (req, res) => {
 	const { userContext, currentTasks } = req.body;
