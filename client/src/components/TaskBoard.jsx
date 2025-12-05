@@ -1,52 +1,66 @@
 import React, { useState } from 'react';
-import { Sparkles, Plus, CheckCircle2, Circle } from 'lucide-react';
+import { Plus, Sparkles, Clock, MoreHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const TaskItem = ({ task }) => (
-	<motion.div
-		layout
-		initial={{ opacity: 0, y: 10, scale: 0.98 }}
-		animate={{ opacity: 1, y: 0, scale: 1 }}
-		exit={{ opacity: 0, scale: 0.95 }}
-		whileHover={{ scale: 1.02 }}
-		className="group relative flex items-start justify-between bg-white/5 backdrop-blur-md border border-white/5 rounded-xl p-5 hover:bg-white/10 transition-all cursor-pointer shadow-lg hover:shadow-primary/5"
-	>
-		<div className="flex-1 flex items-start gap-4">
-			<button className="mt-1 text-white/30 hover:text-primary transition-colors">
-				<Circle size={20} />
-			</button>
-			<div>
-				<h3 className="text-lg font-medium text-white/90 group-hover:text-white transition-colors">{task.title}</h3>
-				{task.contextTags && task.contextTags.length > 0 && (
-					<div className="flex flex-wrap gap-2 mt-2">
-						{task.contextTags.map(tag => (
-							<span key={tag} className="text-[10px] uppercase tracking-wider font-bold bg-white/5 text-white/60 px-2 py-1 rounded-md border border-white/5">
-								{tag}
-							</span>
-						))}
-					</div>
-				)}
-			</div>
-		</div>
+// TaskItem Component
+function TaskItem({ task }) {
+	const getScoreColor = (score) => {
+		if (score >= 80) return 'text-red-400 bg-red-400/10 border-red-400/20';
+		if (score >= 50) return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
+		return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+	};
 
-		{task.importanceScore !== undefined && (
-			<div className="flex flex-col items-end">
-				<div className="relative">
-					<div className={`absolute inset-0 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${task.importanceScore >= 80 ? 'bg-red-500/40' :
-							task.importanceScore >= 50 ? 'bg-yellow-500/40' :
-								'bg-slate-500/40'
-						}`} />
-					<span className={`relative text-xs font-bold px-3 py-1.5 rounded-lg border backdrop-blur-md ${task.importanceScore >= 80 ? 'bg-red-500/10 border-red-500/20 text-red-200' :
-							task.importanceScore >= 50 ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-200' :
-								'bg-slate-500/10 border-slate-500/20 text-slate-400'
-						}`}>
-						{task.importanceScore}
-					</span>
+	return (
+		<motion.div
+			layout
+			initial={{ opacity: 0, y: 10 }}
+			animate={{ opacity: 1, y: 0 }}
+			exit={{ opacity: 0, scale: 0.95 }}
+			whileHover={{ scale: 1.02 }}
+			className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer relative overflow-hidden"
+		>
+			{/* Hover Highlight */}
+			<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+
+			{/* Checkbox */}
+			<div className="mt-1 w-5 h-5 rounded-full border-2 border-white/20 group-hover:border-indigo-500 transition-colors" />
+
+			<div className="flex-1 min-w-0">
+				<div className="flex items-center gap-2 mb-1">
+					<h3 className="font-medium text-white/90 truncate">{task.title}</h3>
+					{task.macroCategory && (
+						<span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/20">
+							{task.macroCategory}
+						</span>
+					)}
+				</div>
+
+				<div className="flex gap-2 flew-wrap">
+					{/* Importance Badge */}
+					{task.importanceScore !== undefined && (
+						<span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getScoreColor(task.importanceScore)}`}>
+							Score: {task.importanceScore}
+						</span>
+					)}
+
+					{/* Time Estimate Badge */}
+					{task.estimatedMinutes && (
+						<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20 flex items-center gap-1">
+							<Clock size={10} /> {task.estimatedMinutes}m
+						</span>
+					)}
+
+					{/* Context Tags */}
+					{task.contextTags && task.contextTags.map((tag, i) => (
+						<span key={i} className="text-[10px] text-white/40 bg-white/5 px-2 py-0.5 rounded-full">
+							#{tag}
+						</span>
+					))}
 				</div>
 			</div>
-		)}
-	</motion.div>
-);
+		</motion.div>
+	);
+}
 
 const TaskBoard = ({ tasks, validBuckets = ['Today', 'Tomorrow', 'Future'], onAddTask, onAutoOrganize, isOrganizing }) => {
 	const [inputValue, setInputValue] = useState('');

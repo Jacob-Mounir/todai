@@ -23,6 +23,8 @@ Using a personal "User Context", it automatically sorts your chaotic brain dump 
 -   **💎 Premium "Glass" UI**: A stunning, multi-billion dollar aesthetic featuring deep mesh gradients, frosted glassmorphism, and fluid animations.
 -   **⚡️ Instant Offline Mode**: The deployed demo runs 100% in the browser using a smart heuristic engine if the backend is unreachable.
 -   **🤖 Context-Awareness**: It differentiates between "Work" (e.g., Client emails) and "Personal" (e.g., Mom's birthday) automatically.
+-   **🎧 Focus Deck**: Built-in Pomodoro Timer and LoFi Music player to help you execute tasks.
+-   **⏱️ Smart Estimates**: AI-predicted task duration to help you plan your day.
 
 ---
 
