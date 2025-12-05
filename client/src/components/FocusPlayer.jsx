@@ -96,17 +96,12 @@ export default function FocusPlayer() {
 			<div className="glass-panel p-4 rounded-3xl flex-1 flex flex-col min-h-0">
 				<div className="flex items-center gap-2 mb-4 text-white/70">
 					<Music size={16} />
-					<span className="text-sm font-medium">Lofi Girl Radio</span>
+					<span className="text-sm font-medium">Work Music Station</span>
 				</div>
 				<div className="flex-1 rounded-2xl overflow-hidden bg-black/40 relative">
 					<iframe
 						className="absolute inset-0 w-full h-full"
-						src="https://www.youtube.com/embed/jfKfPfyJRdk?si=vX0X0X0X0X0X0X0X&controls=0&autoplay=0"
-						title="Lofi Girl"
-						frameBorder="0"
-						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-						allowFullScreen
-					></iframe>
+						src="https://www.youtube.com/embed/MYW0TgV67RE?si=6J4Mq9aqfjGq5F_D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 				</div>
 			</div>
 		</div>
