@@ -14,8 +14,8 @@ export default function MusicPlayer() {
 				<div className="flex-1 rounded-2xl overflow-hidden bg-black/40 relative">
 					<iframe
 						className="absolute inset-0 w-full h-full"
-						src="https://www.youtube.com/embed/jfKfPfyJRdk"
-						title="Lofi Girl"
+						src="https://www.youtube.com/embed/MYW0TgV67RE"
+						title="Work Music Station"
 						frameBorder="0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 						allowFullScreen
