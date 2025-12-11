@@ -7,15 +7,40 @@ export const useTheme = () => useContext(ThemeContext);
 export const ThemeProvider = ({ children }) => {
 	const [theme, setTheme] = useState('dark'); // 'dark' | 'soft'
 
+	// New States for Gradient Maker
+	const [customGradient, setCustomGradient] = useState(() => {
+		return localStorage.getItem('theme_custom_gradient') || null;
+	});
+	const [cardTransparency, setCardTransparency] = useState(() => {
+		return localStorage.getItem('theme_card_transparency') === 'true';
+	});
+
+	// Persistence
+	useEffect(() => {
+		if (customGradient) localStorage.setItem('theme_custom_gradient', customGradient);
+		else localStorage.removeItem('theme_custom_gradient');
+	}, [customGradient]);
+
+	useEffect(() => {
+		localStorage.setItem('theme_card_transparency', cardTransparency);
+	}, [cardTransparency]);
+
+
 	const toggleTheme = () => {
 		setTheme(prev => prev === 'dark' ? 'soft' : 'dark');
+		// Optional: Clear custom gradient when switching themes?
+		// For now let's keep it as an override layer.
+	};
+
+	const toggleCardTransparency = () => {
+		setCardTransparency(prev => !prev);
 	};
 
 	const themeClasses = {
 		dark: {
 			bg: 'bg-black',
 			text: 'text-white',
-			panel: 'glass-panel', // existing glass panel
+			panel: 'glass-panel',
 			gradientText: 'text-transparent bg-clip-text bg-gradient-to-br from-white via-white/90 to-white/50',
 			sidebar: 'glass-panel',
 			accent: 'indigo'
@@ -31,7 +56,15 @@ export const ThemeProvider = ({ children }) => {
 	};
 
 	return (
-		<ThemeContext.Provider value={{ theme, toggleTheme, styles: themeClasses[theme] }}>
+		<ThemeContext.Provider value={{
+			theme,
+			toggleTheme,
+			styles: themeClasses[theme],
+			customGradient,
+			setCustomGradient,
+			cardTransparency,
+			toggleCardTransparency
+		}}>
 			{children}
 		</ThemeContext.Provider>
 	);

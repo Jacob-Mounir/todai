@@ -53,7 +53,7 @@ export default function FocusPlayer() {
 			</div>
 
 			{/* Timer Card */}
-			<div className="glass-panel p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden">
+			<div className="glass-panel p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden flex-1">
 				{/* Progress Halo */}
 				<div className="absolute inset-0 bg-indigo-500/10 pointer-events-none" style={{ height: `${progress * 100}%`, bottom: 0, top: 'auto', transition: 'height 1s linear' }} />
 
@@ -89,24 +89,6 @@ export default function FocusPlayer() {
 					>
 						<RotateCcw size={16} />
 					</button>
-				</div>
-			</div>
-
-			{/* Music Player Embed */}
-			<div className="glass-panel p-4 rounded-3xl flex-1 flex flex-col min-h-0">
-				<div className="flex items-center gap-2 mb-4 text-white/70">
-					<Music size={16} />
-					<span className="text-sm font-medium">Work Music Station</span>
-				</div>
-				<div className="flex-1 rounded-2xl overflow-hidden bg-black/40 relative">
-					<iframe
-						className="absolute inset-0 w-full h-full"
-						src="https://www.youtube.com/embed/jfKfPfyJRdk"
-						title="Lofi Girl"
-						frameBorder="0"
-						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-						allowFullScreen
-					></iframe>
 				</div>
 			</div>
 		</div>
