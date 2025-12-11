@@ -32,7 +32,7 @@ export default function SocialFeed() {
 	const chats = MOCK_CHATS[activeTab] || [];
 
 	return (
-		<div className={`h-full flex flex-col rounded-[2rem] border ${styles.card} backdrop-blur-xl relative overflow-hidden`}>
+		<div className={`h-full flex flex-col rounded-[2rem] ${styles.card} backdrop-blur-xl relative overflow-hidden`}>
 			{/* Header / Tabs */}
 			<div className="p-4 border-b border-current/10">
 				<h3 className="text-xl font-bold mb-4 px-2">Social Hub</h3>

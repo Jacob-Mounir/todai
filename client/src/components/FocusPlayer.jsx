@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Music, Headphones } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Play, Pause, RotateCcw, Music, Headphones, Settings, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FOCUS_TIME = 25 * 60; // 25 minutes
 const BREAK_TIME = 5 * 60;  // 5 minutes
 
 export default function FocusPlayer() {
-	const [timeLeft, setTimeLeft] = useState(FOCUS_TIME);
+	const [duration, setDuration] = useState(25 * 60); // Default duration in seconds
+	const [timeLeft, setTimeLeft] = useState(25 * 60);
 	const [isActive, setIsActive] = useState(false);
-	const [mode, setMode] = useState('FOCUS'); // FOCUS or BREAK
+	const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+	const [customMinutes, setCustomMinutes] = useState('');
 
 	useEffect(() => {
 		let interval = null;
 		if (isActive && timeLeft > 0) {
 			interval = setInterval(() => {
-				setTimeLeft((timeLeft) => timeLeft - 1);
+				setTimeLeft((prev) => prev - 1);
 			}, 1000);
 		} else if (timeLeft === 0) {
 			setIsActive(false);
-			// Auto-switch mode (optional, maybe just stop)
+			// Optional: Play alarm sound here
 		}
 		return () => clearInterval(interval);
 	}, [isActive, timeLeft]);
@@ -27,13 +29,24 @@ export default function FocusPlayer() {
 
 	const resetTimer = () => {
 		setIsActive(false);
-		setTimeLeft(mode === 'FOCUS' ? FOCUS_TIME : BREAK_TIME);
+		setTimeLeft(duration);
 	};
 
-	const switchMode = (newMode) => {
-		setMode(newMode);
+	const setPreset = (minutes) => {
+		const seconds = minutes * 60;
+		setDuration(seconds);
+		setTimeLeft(seconds);
 		setIsActive(false);
-		setTimeLeft(newMode === 'FOCUS' ? FOCUS_TIME : BREAK_TIME);
+		setIsSettingsOpen(false); // Auto-close on preset select? Maybe better UX.
+	};
+
+	const handleCustomSubmit = (e) => {
+		e.preventDefault();
+		const mins = parseInt(customMinutes);
+		if (!isNaN(mins) && mins > 0) {
+			setPreset(mins);
+			setCustomMinutes('');
+		}
 	};
 
 	const formatTime = (seconds) => {
@@ -42,53 +55,99 @@ export default function FocusPlayer() {
 		return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 	};
 
-	const progress = ((mode === 'FOCUS' ? FOCUS_TIME : BREAK_TIME) - timeLeft) / (mode === 'FOCUS' ? FOCUS_TIME : BREAK_TIME);
+	const progress = (duration - timeLeft) / duration;
 
 	return (
-		<div className="h-full flex flex-col gap-6 p-2">
+		<div className="h-full flex flex-col gap-6 p-2 relative group">
 			{/* Header */}
-			<div className="flex items-center gap-2 text-white/50 mb-2">
-				<Headphones size={18} />
-				<h2 className="text-xs font-semibold tracking-widest uppercase">Focus Deck</h2>
+			<div className="flex items-center justify-between mb-2 z-10">
+				<div className="flex items-center gap-2 text-white/50">
+					<Headphones size={18} />
+					<h2 className="text-xs font-semibold tracking-widest uppercase">Focus Timer</h2>
+				</div>
+				<button
+					onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+					className={`p-2 rounded-full transition-all ${isSettingsOpen ? 'bg-white text-black' : 'text-white/30 hover:text-white hover:bg-white/10'}`}
+					title="Timer Settings"
+				>
+					{isSettingsOpen ? <Check size={14} /> : <Settings size={14} />}
+				</button>
 			</div>
 
-			{/* Timer Card */}
-			<div className="glass-panel p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden flex-1">
-				{/* Progress Halo */}
-				<div className="absolute inset-0 bg-indigo-500/10 pointer-events-none" style={{ height: `${progress * 100}%`, bottom: 0, top: 'auto', transition: 'height 1s linear' }} />
+			{/* Main Card */}
+			<div className="glass-panel p-6 rounded-3xl flex-1 relative overflow-hidden">
 
-				<div className="flex gap-2 mb-6 p-1 bg-black/20 rounded-full">
-					<button
-						onClick={() => switchMode('FOCUS')}
-						className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${mode === 'FOCUS' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
-					>
-						Deep Work
-					</button>
-					<button
-						onClick={() => switchMode('BREAK')}
-						className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${mode === 'BREAK' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
-					>
-						Chill
-					</button>
-				</div>
+				{/* Settings View */}
+				<AnimatePresence>
+					{isSettingsOpen && (
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0.95 }}
+							className="absolute inset-0 z-20 bg-black/80 backdrop-blur-xl flex flex-col p-6 gap-4"
+						>
+							<h3 className="text-sm font-bold opacity-50 uppercase tracking-widest text-center mb-2">Set Duration</h3>
 
-				<div className="text-7xl font-bold font-heading text-white tracking-tight mb-8 tabular-nums">
-					{formatTime(timeLeft)}
-				</div>
+							<div className="grid grid-cols-3 gap-3">
+								{[10, 30, 60].map(m => (
+									<button
+										key={m}
+										onClick={() => setPreset(m)}
+										className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/10 active:bg-white/20 border border-white/5 font-bold text-sm transition-colors"
+									>
+										{m}m
+									</button>
+								))}
+							</div>
 
-				<div className="flex items-center gap-4">
-					<button
-						onClick={toggleTimer}
-						className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-					>
-						{isActive ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
-					</button>
-					<button
-						onClick={resetTimer}
-						className="w-10 h-10 rounded-full bg-white/5 text-white/60 flex items-center justify-center hover:bg-white/10 hover:text-white transition-all"
-					>
-						<RotateCcw size={16} />
-					</button>
+							<div className="my-2 h-px bg-white/10 w-full" />
+
+							<form onSubmit={handleCustomSubmit} className="flex gap-2">
+								<input
+									type="number"
+									placeholder="Custom min"
+									value={customMinutes}
+									onChange={(e) => setCustomMinutes(e.target.value)}
+									className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500/50"
+									min="1"
+									max="999"
+								/>
+								<button
+									type="submit"
+									className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 rounded-xl font-bold text-sm transition-colors"
+								>
+									Set
+								</button>
+							</form>
+						</motion.div>
+					)}
+				</AnimatePresence>
+
+
+				{/* Timer View */}
+				<div className={`flex flex-col items-center justify-center h-full relative z-10 transition-all duration-500 ${isSettingsOpen ? 'blur-sm scale-95 opacity-50' : ''}`}>
+
+					{/* Progress Halo */}
+					<div className="absolute inset-x-0 bottom-0 bg-indigo-500/10 pointer-events-none rounded-b-3xl" style={{ height: `${progress * 100}%`, transition: 'height 1s linear' }} />
+
+					<div className="text-7xl font-bold font-heading text-white tracking-tight mb-8 tabular-nums relative drop-shadow-2xl">
+						{formatTime(timeLeft)}
+					</div>
+
+					<div className="flex items-center gap-4">
+						<button
+							onClick={toggleTimer}
+							className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+						>
+							{isActive ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+						</button>
+						<button
+							onClick={resetTimer}
+							className="w-12 h-12 rounded-full bg-white/5 text-white/60 flex items-center justify-center hover:bg-white/10 hover:text-white transition-all border border-white/5"
+						>
+							<RotateCcw size={18} />
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

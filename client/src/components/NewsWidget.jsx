@@ -26,7 +26,7 @@ export default function NewsWidget() {
 	};
 
 	return (
-		<div className={`h-full flex flex-col p-6 rounded-[2rem] border ${styles.card} backdrop-blur-xl relative overflow-hidden group`}>
+		<div className={`h-full flex flex-col p-6 rounded-[2rem] ${styles.card} backdrop-blur-xl relative overflow-hidden group`}>
 			<div className="flex items-center justify-between mb-4">
 				<h3 className="text-xl font-bold flex items-center gap-2">
 					<span className="bg-gradient-to-r from-pink-500 to-rose-500 text-transparent bg-clip-text">Trending News</span>

@@ -17,9 +17,9 @@ export default function GradientMaker() {
 	const { setCustomGradient, toggleCardTransparency, cardTransparency } = useTheme();
 
 	const previewRef = React.useRef(null);
-	const [angle, setAngle] = useState(90); // Start with 'to right' equiv (90deg)
-	const [color1, setColor1] = useState('#ff00cc');
-	const [color2, setColor2] = useState('#333399');
+	const [angle, setAngle] = useState(46); // Start with default 46deg
+	const [color1, setColor1] = useState('#4e3232');
+	const [color2, setColor2] = useState('#1a1a1a');
 	const [copied, setCopied] = useState(false);
 	const [isDragging, setIsDragging] = useState(false);
 
@@ -168,7 +168,6 @@ export default function GradientMaker() {
 				{/* Colors */}
 				<div className="grid grid-cols-2 gap-3">
 					<div className="flex flex-col gap-2">
-						<label className="text-[10px] font-bold text-white/50 uppercase tracking-widest pl-1">Start Color</label>
 						<div className="flex gap-2 items-center bg-white/5 p-2 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
 							<input
 								type="color"
@@ -181,7 +180,6 @@ export default function GradientMaker() {
 					</div>
 
 					<div className="flex flex-col gap-2">
-						<label className="text-[10px] font-bold text-white/50 uppercase tracking-widest pl-1">End Color</label>
 						<div className="flex gap-2 items-center bg-white/5 p-2 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
 							<input
 								type="color"
