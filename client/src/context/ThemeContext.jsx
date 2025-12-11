@@ -9,7 +9,7 @@ export const ThemeProvider = ({ children }) => {
 
 	// New States for Gradient Maker
 	const [customGradient, setCustomGradient] = useState(() => {
-		return localStorage.getItem('theme_custom_gradient') || null;
+		return localStorage.getItem('theme_custom_gradient') || 'linear-gradient(46deg, #4e3232, #1a1a1a)';
 	});
 	const [cardTransparency, setCardTransparency] = useState(() => {
 		return localStorage.getItem('theme_card_transparency') === 'true';
